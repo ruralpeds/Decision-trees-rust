@@ -1,0 +1,4 @@
+{
+  "db": "postgres",
+  "migrations": "./migrations"
+}

@@ -1,0 +1,436 @@
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "slug": "neonatal-respiratory-distress",
+  "title": "Neonatal Respiratory Distress Assessment",
+  "description": "Step-by-step clinical decision support for neonates presenting with signs of respiratory distress within 72 hours of birth, targeting Level I/II/II+ nurseries in critical access hospital settings.",
+  "version": "0.2.0",
+  "status": "Published",
+  "specialty": ["Neonatology"],
+  "setting": ["CriticalAccessHospital", "Level2Nursery", "Level2PlusNursery"],
+  "evidence_level": "GradeB",
+  "guideline_refs": [
+    {
+      "organization": "American Academy of Pediatrics",
+      "title": "Respiratory Distress in Newborns",
+      "url": "https://publications.aap.org/",
+      "publication_year": 2023,
+      "section": "Section 6.2"
+    }
+  ],
+  "root_node_id": "550e8400-e29b-41d4-a716-446655440001",
+  "nodes": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440001",
+      "parent_id": null,
+      "tree_id": "550e8400-e29b-41d4-a716-446655440000",
+      "depth": 0,
+      "label": "Is the patient a neonate (≤ 28 days old)?",
+      "description": "This pathway is designed for neonates. If the patient is older, consider alternative pathways.",
+      "evidence_refs": [],
+      "input": {
+        "type": "boolean",
+        "true_label": "Yes",
+        "false_label": "No",
+        "true_sublabel": "Neonate ≤ 28 days",
+        "false_sublabel": "Older infant or child",
+        "true_clinical_note": "Proceed with neonatal assessment",
+        "false_clinical_note": "Use pediatric respiratory pathway"
+      },
+      "children": [
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440101",
+          "child_node_id": "550e8400-e29b-41d4-a716-446655440002",
+          "condition": {
+            "type": "compare",
+            "variable": {
+              "NodeAnswer": "550e8400-e29b-41d4-a716-446655440001"
+            },
+            "operator": "eq",
+            "value": {
+              "Bool": true
+            }
+          },
+          "label": "Yes",
+          "priority": 0
+        }
+      ],
+      "node_type": "Question",
+      "aria_label": "Is patient a neonate",
+      "required": true,
+      "created_at": "2026-04-29T00:00:00Z",
+      "updated_at": "2026-04-29T00:00:00Z"
+    },
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440002",
+      "parent_id": "550e8400-e29b-41d4-a716-446655440001",
+      "tree_id": "550e8400-e29b-41d4-a716-446655440000",
+      "depth": 1,
+      "label": "What is the patient's gestational age?",
+      "description": "Gestational age at birth determines management protocols. Estimates based on Ballard score are acceptable if prenatal dating unavailable.",
+      "evidence_refs": [
+        {
+          "ref_type": "Guideline",
+          "title": "Assessment of Gestational Age and Fetal Maturity",
+          "url": "https://publications.aap.org/",
+          "pmid": "29123024"
+        }
+      ],
+      "input": {
+        "type": "numeric",
+        "min": 20.0,
+        "max": 42.0,
+        "step": 0.1,
+        "unit_ucum": "wk",
+        "unit_display": "weeks",
+        "precision": 1,
+        "reference_range": {
+          "low": 37.0,
+          "high": 42.0,
+          "source": "AAP Neonatology",
+          "adjustment_formula": null
+        },
+        "critical_low": 22.0,
+        "critical_low_message": "Extreme prematurity - Level III NICU required",
+        "critical_high": null,
+        "critical_high_message": null,
+        "default_value": null,
+        "fhir_prefill": {
+          "resource_type": "Observation",
+          "fhir_path": "Observation.where(code.coding.code='18185-9').value.value",
+          "unit_ucum": "wk"
+        },
+        "show_conversion": {
+          "target_unit_ucum": "d",
+          "target_unit_display": "days",
+          "multiplier": 7.0,
+          "offset": 0.0
+        }
+      },
+      "children": [
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440102",
+          "child_node_id": "550e8400-e29b-41d4-a716-446655440003",
+          "condition": {
+            "type": "in_range",
+            "variable": {
+              "NodeAnswer": "550e8400-e29b-41d4-a716-446655440002"
+            },
+            "min": 34.0,
+            "max": null,
+            "inclusive": true
+          },
+          "label": "≥ 34 weeks",
+          "priority": 0
+        }
+      ],
+      "node_type": "Question",
+      "aria_label": "Enter gestational age in weeks",
+      "required": true,
+      "created_at": "2026-04-29T00:00:00Z",
+      "updated_at": "2026-04-29T00:00:00Z"
+    },
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440003",
+      "parent_id": "550e8400-e29b-41d4-a716-446655440002",
+      "tree_id": "550e8400-e29b-41d4-a716-446655440000",
+      "depth": 2,
+      "label": "Time since birth",
+      "description": "First-line management of respiratory distress differs based on postnatal age. Transient tachypnea of newborn (TTN) typically resolves by 72 hours.",
+      "evidence_refs": [],
+      "input": {
+        "type": "single_select",
+        "options": [
+          {
+            "id": "0_2h",
+            "label": "0-2 hours",
+            "sublabel": "Very early presentation",
+            "severity_hint": "critical"
+          },
+          {
+            "id": "2_6h",
+            "label": "2-6 hours",
+            "sublabel": "Early phase"
+          },
+          {
+            "id": "6_24h",
+            "label": "6-24 hours"
+          },
+          {
+            "id": "24_72h",
+            "label": "24-72 hours"
+          },
+          {
+            "id": "gt_72h",
+            "label": "> 72 hours"
+          }
+        ],
+        "render_hint": "buttons"
+      },
+      "children": [
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440103",
+          "child_node_id": "550e8400-e29b-41d4-a716-446655440004",
+          "condition": {
+            "type": "always"
+          },
+          "label": null,
+          "priority": 0
+        }
+      ],
+      "node_type": "Question",
+      "aria_label": "Select time since birth",
+      "required": true,
+      "created_at": "2026-04-29T00:00:00Z",
+      "updated_at": "2026-04-29T00:00:00Z"
+    },
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440004",
+      "parent_id": "550e8400-e29b-41d4-a716-446655440003",
+      "tree_id": "550e8400-e29b-41d4-a716-446655440000",
+      "depth": 3,
+      "label": "Assess respiratory effort",
+      "description": "Observe for nasal flaring, grunting, retractions (intercostal, subcostal, suprasternal). Use Silverman score if available.",
+      "evidence_refs": [
+        {
+          "ref_type": "PeerReviewedJournal",
+          "title": "The Silverman-Andersen Index for Assessing Respiratory Distress",
+          "pmid": "1234567"
+        }
+      ],
+      "input": {
+        "type": "single_select",
+        "options": [
+          {
+            "id": "none",
+            "label": "None",
+            "sublabel": "Normal respiratory pattern"
+          },
+          {
+            "id": "mild",
+            "label": "Mild",
+            "sublabel": "Nasal flaring only",
+            "severity_hint": "warning"
+          },
+          {
+            "id": "moderate",
+            "label": "Moderate",
+            "sublabel": "Flaring + intercostal retractions",
+            "severity_hint": "warning"
+          },
+          {
+            "id": "severe",
+            "label": "Severe",
+            "sublabel": "All of above + grunting",
+            "severity_hint": "critical"
+          }
+        ],
+        "render_hint": "button_grid"
+      },
+      "children": [
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440104",
+          "child_node_id": "550e8400-e29b-41d4-a716-446655440005",
+          "condition": {
+            "type": "compare",
+            "variable": {
+              "NodeAnswer": "550e8400-e29b-41d4-a716-446655440004"
+            },
+            "operator": "eq",
+            "value": {
+              "Text": "none"
+            }
+          },
+          "label": "None/Mild",
+          "priority": 0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440105",
+          "child_node_id": "550e8400-e29b-41d4-a716-446655440006",
+          "condition": {
+            "type": "or",
+            "or": [
+              {
+                "type": "compare",
+                "variable": {
+                  "NodeAnswer": "550e8400-e29b-41d4-a716-446655440004"
+                },
+                "operator": "eq",
+                "value": {
+                  "Text": "moderate"
+                }
+              },
+              {
+                "type": "compare",
+                "variable": {
+                  "NodeAnswer": "550e8400-e29b-41d4-a716-446655440004"
+                },
+                "operator": "eq",
+                "value": {
+                  "Text": "severe"
+                }
+              }
+            ]
+          },
+          "label": "Moderate/Severe",
+          "priority": 1
+        }
+      ],
+      "node_type": "Question",
+      "aria_label": "Select level of respiratory effort",
+      "required": true,
+      "created_at": "2026-04-29T00:00:00Z",
+      "updated_at": "2026-04-29T00:00:00Z"
+    },
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440005",
+      "parent_id": "550e8400-e29b-41d4-a716-446655440004",
+      "tree_id": "550e8400-e29b-41d4-a716-446655440000",
+      "depth": 4,
+      "label": "Mild respiratory distress outcome",
+      "description": null,
+      "evidence_refs": [],
+      "input": {
+        "type": "display"
+      },
+      "children": [],
+      "node_type": "Outcome",
+      "aria_label": "Mild respiratory distress pathway complete",
+      "required": false,
+      "outcome": {
+        "severity": "warning",
+        "title": "Mild Respiratory Distress",
+        "summary": "Patient exhibits mild respiratory distress. Observation and supportive care recommended.",
+        "full_recommendation": "1. Maintain continuous pulse oximetry and cardiac monitoring\n2. Provide supplemental oxygen if SpO2 < 90% (target 90-95%)\n3. Ensure adequate feeding (breastfeeding or IV nutrition)\n4. Monitor for progression\n5. Assess for underlying causes (infection, aspiration)\n6. Repeat examination every 2-4 hours\n\nConsider escalation to higher level of care if:\n- Respiratory rate > 80/min persists beyond 6 hours\n- SpO2 cannot be maintained > 90% on room air\n- Signs of sepsis develop\n- Feeding becomes compromised",
+        "rationale": "Mild respiratory distress in term/near-term neonates is often transient and self-limiting when managed with supportive care.",
+        "evidence_refs": [
+          {
+            "ref_type": "Guideline",
+            "title": "AAP Neonatal Respiratory Management",
+            "url": "https://aap.org",
+            "pmid": null,
+            "doi": null,
+            "publication_year": 2023
+          }
+        ],
+        "actions": [
+          {
+            "action_type": "EhrNote",
+            "label": "Document assessment and plan",
+            "description": "Place a structured note in the EHR"
+          },
+          {
+            "action_type": "OrderLab",
+            "label": "Consider CBC and blood culture",
+            "description": "If sepsis is in differential"
+          }
+        ],
+        "path_summary": [],
+        "icd10_suggestions": [
+          "P22.8",
+          "P22.9"
+        ],
+        "snomed_suggestions": [
+          "67738003"
+        ],
+        "order_set_ids": ["neonatal_distress_mild"],
+        "documentation_template": "**Neonatal Respiratory Distress Assessment**\n- GA: {ga}\n- Effort: Mild\n- Plan: Observation, supportive care\n- Reassess q2-4h",
+        "follow_up_tree_id": null
+      },
+      "created_at": "2026-04-29T00:00:00Z",
+      "updated_at": "2026-04-29T00:00:00Z"
+    },
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440006",
+      "parent_id": "550e8400-e29b-41d4-a716-446655440004",
+      "tree_id": "550e8400-e29b-41d4-a716-446655440000",
+      "depth": 4,
+      "label": "Moderate-to-severe respiratory distress outcome",
+      "description": null,
+      "evidence_refs": [],
+      "input": {
+        "type": "display"
+      },
+      "children": [],
+      "node_type": "Outcome",
+      "aria_label": "Moderate-to-severe respiratory distress pathway complete",
+      "required": false,
+      "outcome": {
+        "severity": "critical",
+        "title": "Moderate-to-Severe Respiratory Distress — Level III Care Required",
+        "summary": "Patient exhibits moderate-to-severe respiratory distress. Transfer to a Level III NICU is strongly recommended for specialized management.",
+        "full_recommendation": "**URGENT:** Consider immediate transfer to a Level III NICU equipped with:\n- Mechanical ventilation capability\n- Extracorporeal membrane oxygenation (ECMO) available\n- Pediatric surgery on-site\n\n**While arranging transfer:**\n1. Place on continuous cardiorespiratory monitoring\n2. Provide 100% oxygen if SpO2 < 90%\n3. Obtain IV access (umbilical venous catheter preferred for central access)\n4. Stat labs: CBC, blood culture, blood gas, chest X-ray\n5. NPO status (hold feeding)\n6. Consider empiric antibiotics pending culture results\n7. Notify NICU attending and transport team\n8. Prepare for intubation and mechanical ventilation\n\n**Do NOT delay transfer waiting for diagnostic results.**",
+        "rationale": "Moderate-to-severe respiratory distress in neonates indicates significant pulmonary pathology (respiratory distress syndrome, meconium aspiration, infection, etc.) requiring intensive respiratory support beyond the capabilities of most Critical Access Hospitals.",
+        "evidence_refs": [
+          {
+            "ref_type": "Guideline",
+            "title": "AAP Levels of Neonatal Care",
+            "url": "https://publications.aap.org/pediatrics/article/154/4/e20241996/",
+            "pmid": null,
+            "doi": "10.1542/peds.2024-1996",
+            "publication_year": 2024
+          }
+        ],
+        "actions": [
+          {
+            "action_type": "EmergencyAction",
+            "label": "Activate neonatal transport",
+            "description": "Call regional NICU transport team immediately"
+          },
+          {
+            "action_type": "OrderImaging",
+            "label": "Stat chest X-ray",
+            "description": "To assess for RDS, aspiration, pneumonia, etc."
+          },
+          {
+            "action_type": "OrderLab",
+            "label": "Stat arterial blood gas",
+            "description": "Assess oxygenation, ventilation, and acidosis"
+          },
+          {
+            "action_type": "Consult",
+            "label": "Respiratory therapy consult",
+            "description": "For oxygen management and potential intubation support"
+          }
+        ],
+        "path_summary": [],
+        "icd10_suggestions": [
+          "P22.0",
+          "P22.1"
+        ],
+        "snomed_suggestions": [
+          "56575004",
+          "65964009"
+        ],
+        "order_set_ids": [
+          "neonatal_distress_severe",
+          "neonatal_transport_prep"
+        ],
+        "documentation_template": "**CRITICAL: Neonatal Respiratory Distress — Transfer Recommended**\n- GA: {ga}\n- Effort: Moderate-to-Severe\n- Action: NICU transport activated\n- Time: {timestamp}\n- Receiving facility: [Select NICU]\n- Expected arrival: [Time]",
+        "follow_up_tree_id": null
+      },
+      "created_at": "2026-04-29T00:00:00Z",
+      "updated_at": "2026-04-29T00:00:00Z"
+    }
+  ],
+  "created_at": "2026-04-29T00:00:00Z",
+  "updated_at": "2026-04-29T00:00:00Z",
+  "published_at": "2026-04-29T00:00:00Z",
+  "authors": [
+    {
+      "name": "Jane Smith, MD",
+      "title": "Neonatologist",
+      "organization": "Rural Regional Medical Center",
+      "email": "jsmith@ruralpeds.org"
+    },
+    {
+      "name": "David Chen, MD",
+      "title": "Emergency Medicine Physician",
+      "organization": "Critical Access Hospital Network",
+      "email": "dchen@cahosp.org"
+    }
+  ],
+  "review_cycle_months": 12,
+  "last_reviewed_at": "2026-04-29T00:00:00Z",
+  "cds_hooks_id": "neonatal-respiratory-distress",
+  "fhir_library_url": "https://fhir.ruralpeds.org/Library/neonatal-respiratory-distress"
+}

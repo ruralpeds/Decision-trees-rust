@@ -1,0 +1,44 @@
+[workspace]
+members = [
+    "crates/cds-tree-core",
+    "crates/cds-tree-api",
+    "crates/cds-tree-storage",
+    "crates/cds-tree-fhir",
+    "crates/cds-tree-audit",
+    "crates/cds-tree-wasm",
+]
+resolver = "2"
+
+[sqlx]
+database-url = "postgres://cds_user:cds_password@localhost:5432/cds_tree"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+authors = ["ruralpeds <team@ruralpeds.org>"]
+license = "Apache-2.0"
+repository = "https://github.com/ruralpeds/cds-tree-rs"
+homepage = "https://ruralpeds.org"
+description = "Clinical decision tree engine for medical decision support"
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+thiserror = "2"
+anyhow = "1"
+tokio = { version = "1", features = ["full"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
+
+[profile.wasm]
+inherits = "release"
+opt-level = "z"
+lto = true
