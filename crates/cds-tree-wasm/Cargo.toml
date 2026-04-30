@@ -1,0 +1,47 @@
+[package]
+name = "cds-tree-wasm"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "WebAssembly target for clinical decision tree evaluator - run trees in browsers and offline"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+cds-tree-core = { path = "../cds-tree-core" }
+serde.workspace = true
+serde_json.workspace = true
+uuid.workspace = true
+chrono.workspace = true
+wasm-bindgen = "0.2.91"
+wasm-bindgen-futures = "0.4.41"
+web-sys = { version = "0.3.68", features = [
+    "Window",
+    "Document",
+    "HtmlElement",
+    "Storage",
+    "console",
+    "IndexedDb",
+    "IdbFactory",
+    "IdbDatabase",
+    "IdbObjectStore",
+    "IdbRequest",
+    "IdbOpenDbRequest",
+    "IdbKeyRange",
+] }
+js-sys = "0.3.68"
+getrandom = { version = "0.2", features = ["js"] }
+gloo-utils = "0.1.7"
+gloo-console = "0.2.3"
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+strip = true
+
+[dev-dependencies]
+wasm-bindgen-test = "1.3.34"
