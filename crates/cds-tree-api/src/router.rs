@@ -44,7 +44,14 @@ pub fn build_router(state: AppState) -> Router {
 
     // Public routes (no auth required)
     let public_routes = Router::new()
-        .route("/cds-services", get(|| async { "CDS Hooks discovery" }))
+        // CDS Hooks endpoints
+        .route("/cds-services", get(handlers::cds_services_discovery))
+        .route("/cds-services/metadata", get(handlers::cds_service_metadata))
+        .route("/cds-services/fever-assessment", post(handlers::fever_assessment_service))
+        .route("/cds-services/antibiotic-stewardship", post(handlers::antibiotic_stewardship_service))
+        .route("/cds-services/order-safety-review", post(handlers::order_safety_review_service))
+        .route("/cds-services/:service-id/feedback", post(handlers::record_cds_feedback))
+        // Metrics
         .route("/metrics", get(handlers::metrics))
         .with_state(state.clone());
 
@@ -72,6 +79,13 @@ pub fn build_router(state: AppState) -> Router {
         .route("/sessions/:session_id/path", get(handlers::get_session_path))
         .route("/sessions/:session_id/outcome", get(handlers::get_session_outcome))
         .route("/sessions/:session_id/abandon", post(handlers::abandon_session))
+        // Audit log and export endpoints
+        .route("/sessions/:session_id/audit-log", get(handlers::get_session_audit_log))
+        .route("/sessions/:session_id/fhir-audit-event", get(handlers::export_session_as_fhir_audit_event))
+        .route("/sessions/:session_id/fhir-observations", get(handlers::export_session_as_fhir_observations))
+        .route("/sessions/:session_id/summary", get(handlers::get_session_summary))
+        .route("/clinicians/:clinician_id/audit-log", get(handlers::get_clinician_audit_log))
+        .route("/patients/:patient_id/audit-log", get(handlers::get_patient_audit_log))
         .with_state(state.clone());
 
     // Combine all routers

@@ -11,6 +11,7 @@ description = "REST API server for clinical decision tree traversal"
 # Core
 cds-tree-core = { path = "../cds-tree-core" }
 cds-tree-storage = { path = "../cds-tree-storage" }
+cds-tree-fhir = { path = "../cds-tree-fhir" }
 serde.workspace = true
 serde_json.workspace = true
 uuid.workspace = true

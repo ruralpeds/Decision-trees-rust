@@ -4,7 +4,7 @@ pub mod repo;
 
 pub use error::{StorageError, StorageResult};
 pub use models::*;
-pub use repo::{TreeRepository, NodeRepository, SessionRepository};
+pub use repo::{TreeRepository, NodeRepository, SessionRepository, AuditLogRepository};
 
 /// Run database migrations
 pub async fn run_migrations(
